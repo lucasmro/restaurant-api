@@ -1,0 +1,8 @@
+src/main/webapp/WEB-INF/classes
+target
+.DS_Store
+.class
+.project
+.classpath
+.settings
+
