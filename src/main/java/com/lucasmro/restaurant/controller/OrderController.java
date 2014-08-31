@@ -1,5 +1,8 @@
 package com.lucasmro.restaurant.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,6 +17,7 @@ import org.apache.commons.lang3.EnumUtils;
 
 import com.lucasmro.restaurant.enums.OrderStatus;
 import com.lucasmro.restaurant.enums.ProductType;
+import com.lucasmro.restaurant.fixture.OrderFixture;
 import com.lucasmro.restaurant.model.Order;
 import com.lucasmro.restaurant.model.OrderItem;
 import com.lucasmro.restaurant.model.Product;
@@ -56,6 +60,26 @@ public class OrderController {
 			order.setTotal(item.getProduct().getPrice() * item.getQuantity());
 
 			return Response.status(200).entity(order).build();
+		}
+
+		return Response.status(Response.Status.NOT_FOUND).build();
+	}
+
+	@GET
+	@Path("/table/{table}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllOrdersByTable(@PathParam("table") Integer table) {
+		// TODO: Create persistence layer
+
+		if (table == 5) {
+			Order order1 = OrderFixture.createTableOrderHamburguer();
+			Order order2 = OrderFixture.createTableOrderDrink();
+
+			List<Order> orders = new ArrayList<Order>();
+			orders.add(order1);
+			orders.add(order2);
+
+			return Response.status(200).entity(orders).build();
 		}
 
 		return Response.status(Response.Status.NOT_FOUND).build();

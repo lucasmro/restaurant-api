@@ -13,17 +13,14 @@ import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Test;
 
 import com.lucasmro.restaurant.enums.OrderStatus;
-import com.lucasmro.restaurant.enums.ProductType;
-import com.lucasmro.restaurant.model.Address;
-import com.lucasmro.restaurant.model.Delivery;
+import com.lucasmro.restaurant.fixture.OrderFixture;
 import com.lucasmro.restaurant.model.Order;
-import com.lucasmro.restaurant.model.OrderItem;
-import com.lucasmro.restaurant.model.Product;
 
 public class OrderControllerTest {
 	private final static String ROUTE_ORDERS = "/orders/";
 	private final static String ROUTE_ORDERS_ID = "/orders/{id}";
 	private final static String ROUTE_ORDERS_ID_STATUS = "/orders/{id}/{status}";
+	private final static String ROUTE_ORDERS_TABLE = "/orders/table/{table}";
 
 	@Test
 	public void testPostOrderShouldReturnUnsupportedMediaTypeWhenPayloadIsEmpty() {
@@ -55,20 +52,7 @@ public class OrderControllerTest {
 	public void testPostTableOrderShouldReturnCreatedWhenOrderIsValid() throws JsonGenerationException, JsonMappingException, IOException {
 		// TODO: Create data fixture
 
-		Product product = new Product();
-		product.setId(1);
-		product.setType(ProductType.HAMBURGUER);
-		product.setDescription("X-EGG");
-		product.setPrice(10.5);
-
-		OrderItem item = new OrderItem();
-		item.setProduct(product);
-		item.setQuantity(2);
-
-		Order order = new Order();
-		order.setTable(5);
-		order.addItem(item);
-		order.setTotal(item.getProduct().getPrice() * item.getQuantity());
+		Order order = OrderFixture.createTableOrderHamburguer();
 
 		// TODO: Create JsonConverter class to convert from Object to JSON and from JSON to Object.
 		ObjectWriter ow = new ObjectMapper().writer();
@@ -87,33 +71,7 @@ public class OrderControllerTest {
 	public void testPostDeliveryOrderShouldReturnCreatedWhenOrderIsValid() throws JsonGenerationException, JsonMappingException, IOException {
 		// TODO: Create data fixture
 
-		Product product = new Product();
-		product.setId(1);
-		product.setType(ProductType.HAMBURGUER);
-		product.setDescription("X-EGG");
-		product.setPrice(10.5);
-
-		OrderItem item = new OrderItem();
-		item.setProduct(product);
-		item.setQuantity(2);
-
-		Address address = new Address();
-		address.setStreet("Rua Guararapes");
-		address.setNumber("100");
-		address.setComplement("APTO 302");
-		address.setCity("São Paulo");
-		address.setState("SP");
-		address.setZip("04561-000");
-
-		Delivery delivery = new Delivery();
-		delivery.setFullname("Lucas Michelini Reis de Oliveira");
-		delivery.setEmail("lucasmro@gmail.com");
-		delivery.setAddress(address);
-
-		Order order = new Order();
-		order.setDelivery(delivery);
-		order.addItem(item);
-		order.setTotal(item.getProduct().getPrice() * item.getQuantity());
+		Order order = OrderFixture.createDeliveryOrder();
 
 		// TODO: Create JsonConverter class to convert from Object to JSON and from JSON to Object.
 		ObjectWriter ow = new ObjectMapper().writer();
@@ -148,7 +106,28 @@ public class OrderControllerTest {
 		when().
 			get(ROUTE_ORDERS_ID, 1000);
 	}
-	
+
+	@Test
+	public void testGetAllOrdersByTableShouldReturnOKWhenTableHasOrders() {
+		given().
+			contentType(MediaType.APPLICATION_JSON).
+		expect().
+			contentType(MediaType.APPLICATION_JSON).
+			statusCode(200).
+		when().
+			get(ROUTE_ORDERS_TABLE, 5);
+	}
+
+	@Test
+	public void testGetAllOrdersByTableShouldReturnNotFoundWhenTableDoesNotHaveOrders() {
+		given().
+			contentType(MediaType.APPLICATION_JSON).
+		expect().
+			statusCode(404).
+		when().
+			get(ROUTE_ORDERS_TABLE, 1000);
+	}
+
 	@Test
 	public void testPutOrderByIdShouldReturnBadRequestAndDoNotUpdateOrderWhenOrderIdIsInvalid() {
 		given().
@@ -178,6 +157,4 @@ public class OrderControllerTest {
 		when().
 			put(ROUTE_ORDERS_ID_STATUS, 1, OrderStatus.CANCELED);
 	}
-
-	// TODO: Get all orders by table
 }
