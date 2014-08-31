@@ -12,6 +12,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Test;
 
+import com.lucasmro.restaurant.enums.OrderStatus;
 import com.lucasmro.restaurant.enums.ProductType;
 import com.lucasmro.restaurant.model.Order;
 import com.lucasmro.restaurant.model.OrderItem;
@@ -20,6 +21,7 @@ import com.lucasmro.restaurant.model.Product;
 public class OrderControllerTest {
 	private final static String ROUTE_ORDERS = "/orders/";
 	private final static String ROUTE_ORDERS_ID = "/orders/{id}";
+	private final static String ROUTE_ORDERS_ID_STATUS = "/orders/{id}/{status}";
 
 	@Test
 	public void testPostOrderShouldReturnUnsupportedMediaTypeWhenPayloadIsEmpty() {
@@ -100,7 +102,36 @@ public class OrderControllerTest {
 			get(ROUTE_ORDERS_ID, 1000);
 	}
 	
-	// TODO: Update status
+	@Test
+	public void testPutOrderByIdShouldReturnBadRequestAndDoNotUpdateOrderWhenOrderIdIsInvalid() {
+		given().
+			contentType(MediaType.APPLICATION_JSON).
+		expect().
+			statusCode(400).
+		when().
+			put(ROUTE_ORDERS_ID_STATUS, 1000, OrderStatus.CANCELED);
+	}
+
+	@Test
+	public void testPutOrderByIdShouldReturnBadRequestAndDoNotUpdateOrderWhenStatusIsInvalid() {
+		given().
+			contentType(MediaType.APPLICATION_JSON).
+		expect().
+			statusCode(400).
+		when().
+			put(ROUTE_ORDERS_ID_STATUS, 1, "DUMMY");
+	}
+
+	@Test
+	public void testPutOrderByIdShouldUpdateOrderAndReturnNoContentWhenOrderIdAndStatusAreValid() {
+		given().
+			contentType(MediaType.APPLICATION_JSON).
+		expect().
+			statusCode(204).
+		when().
+			put(ROUTE_ORDERS_ID_STATUS, 1, OrderStatus.CANCELED);
+	}
+
 	// TODO: Get all orders by table
 	// TODO: Post order (delivery -> partner and address)
 }

@@ -3,11 +3,14 @@ package com.lucasmro.restaurant.controller;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.apache.commons.lang3.EnumUtils;
 
 import com.lucasmro.restaurant.enums.OrderStatus;
 import com.lucasmro.restaurant.enums.ProductType;
@@ -32,7 +35,7 @@ public class OrderController {
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getOrder(@PathParam("id") Integer id) {
+	public Response getOrderById(@PathParam("id") Integer id) {
 		// TODO: Create persistence layer
 
 		if (id == 1) {
@@ -56,6 +59,19 @@ public class OrderController {
 		}
 
 		return Response.status(Response.Status.NOT_FOUND).build();
+	}
+
+	@PUT
+	@Path("/{id}/{status}")
+	public Response putOrderStatusByOrderId(@PathParam("id") Integer id, @PathParam("status") String status) {
+		// TODO: Create persistence layer and change the following validation
+
+		if (id == 1000 || !EnumUtils.isValidEnum(OrderStatus.class, status)) {
+			// TODO: Maybe return a JSON error response ?!?
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+
+		return Response.status(Response.Status.NO_CONTENT).build();
 	}
 
 	// TODO: Extract method to a validator class
