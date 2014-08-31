@@ -12,11 +12,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.EnumUtils;
 
 import com.lucasmro.restaurant.enums.OrderStatus;
 import com.lucasmro.restaurant.enums.ProductType;
+import com.lucasmro.restaurant.exception.ResourceNotFoundException;
 import com.lucasmro.restaurant.fixture.OrderFixture;
 import com.lucasmro.restaurant.model.Order;
 import com.lucasmro.restaurant.model.OrderItem;
@@ -33,14 +35,15 @@ public class OrderController {
 
 		// TODO: Create persistence layer
 
-		return Response.status(Response.Status.CREATED).build();
+		return Response.status(Status.CREATED).build();
 	}
 
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getOrderById(@PathParam("id") Integer id) {
+	public Response getOrderById(@PathParam("id") Integer id) throws ResourceNotFoundException {
 		// TODO: Create persistence layer
+		Order order = null;
 
 		if (id == 1) {
 			Product product = new Product();
@@ -53,36 +56,41 @@ public class OrderController {
 			item.setProduct(product);
 			item.setQuantity(2);
 
-			Order order = new Order();
+			order = new Order();
 			order.setId(1);
 			order.setStatus(OrderStatus.WAITING);
 			order.addItem(item);
 			order.setTotal(item.getProduct().getPrice() * item.getQuantity());
-
-			return Response.status(200).entity(order).build();
 		}
 
-		return Response.status(Response.Status.NOT_FOUND).build();
+		if (null == order) {
+			throw new ResourceNotFoundException("No Order found with Id " + id);
+		}
+
+		return Response.status(Status.OK).entity(order).build();
 	}
 
 	@GET
 	@Path("/table/{table}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAllOrdersByTable(@PathParam("table") Integer table) {
+	public Response getAllOrdersByTable(@PathParam("table") Integer table) throws ResourceNotFoundException {
 		// TODO: Create persistence layer
+		List<Order> orders = null;
 
 		if (table == 5) {
 			Order order1 = OrderFixture.createTableOrderHamburguer();
 			Order order2 = OrderFixture.createTableOrderDrink();
 
-			List<Order> orders = new ArrayList<Order>();
+			orders = new ArrayList<Order>();
 			orders.add(order1);
 			orders.add(order2);
-
-			return Response.status(200).entity(orders).build();
 		}
 
-		return Response.status(Response.Status.NOT_FOUND).build();
+		if (null == orders) {
+			throw new ResourceNotFoundException("No Orders found for table " + table);
+		}
+
+		return Response.status(Status.OK).entity(orders).build();
 	}
 
 	@PUT
@@ -92,9 +100,9 @@ public class OrderController {
 
 		if (id == 1000 || !EnumUtils.isValidEnum(OrderStatus.class, status)) {
 			// TODO: Maybe return a JSON error response ?!?
-			return Response.status(Response.Status.BAD_REQUEST).build();
+			return Response.status(Status.BAD_REQUEST).build();
 		}
 
-		return Response.status(Response.Status.NO_CONTENT).build();
+		return Response.status(Status.NO_CONTENT).build();
 	}
 }

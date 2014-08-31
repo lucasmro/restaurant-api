@@ -26,6 +26,7 @@ public class ProductControllerTest {
 		given().
 			contentType(MediaType.APPLICATION_JSON).
 		expect().
+			contentType(MediaType.APPLICATION_JSON).
 			statusCode(404).
 		when().
 			get(ROUTE_PRODUCTS_ID, 1000);

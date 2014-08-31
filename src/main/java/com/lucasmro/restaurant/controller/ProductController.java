@@ -9,8 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.lucasmro.restaurant.enums.ProductType;
+import com.lucasmro.restaurant.exception.ResourceNotFoundException;
 import com.lucasmro.restaurant.model.Product;
 
 @Path("/products")
@@ -36,25 +38,28 @@ public class ProductController {
 		products.add(product1);
 		products.add(product2);
 
-		return Response.status(200).entity(products).build();
+		return Response.status(Status.OK).entity(products).build();
 	}
 
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getProduct(@PathParam("id") Integer id) {
+	public Response getProduct(@PathParam("id") Integer id) throws ResourceNotFoundException {
 		// TODO: Create persistence layer
+		Product product = null;
 
 		if (id == 1) {
-			Product product = new Product();
+			product = new Product();
 			product.setId(1);
 			product.setType(ProductType.HAMBURGUER);
 			product.setDescription("X-EGG");
 			product.setPrice(10.5);
-
-			return Response.status(200).entity(product).build();
 		}
 
-		return Response.status(Response.Status.NOT_FOUND).build();
+		if (null == product) {
+			throw new ResourceNotFoundException("No Product found with Id " + id);
+		}
+
+		return Response.status(Status.OK).entity(product).build();
 	}
 }
