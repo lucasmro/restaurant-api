@@ -43,6 +43,7 @@ public class OrderControllerTest {
 			contentType(MediaType.APPLICATION_JSON).
 			body(json).
 		expect().
+			contentType(MediaType.APPLICATION_JSON).
 			statusCode(400).
 		when().
 			post(ROUTE_ORDERS);
@@ -102,6 +103,7 @@ public class OrderControllerTest {
 		given().
 			contentType(MediaType.APPLICATION_JSON).
 		expect().
+			contentType(MediaType.APPLICATION_JSON).
 			statusCode(404).
 		when().
 			get(ROUTE_ORDERS_ID, 1000);
@@ -123,6 +125,7 @@ public class OrderControllerTest {
 		given().
 			contentType(MediaType.APPLICATION_JSON).
 		expect().
+			contentType(MediaType.APPLICATION_JSON).
 			statusCode(404).
 		when().
 			get(ROUTE_ORDERS_TABLE, 1000);
@@ -133,7 +136,8 @@ public class OrderControllerTest {
 		given().
 			contentType(MediaType.APPLICATION_JSON).
 		expect().
-			statusCode(400).
+			contentType(MediaType.APPLICATION_JSON).
+			statusCode(404).
 		when().
 			put(ROUTE_ORDERS_ID_STATUS, 1000, OrderStatus.CANCELED);
 	}
@@ -143,6 +147,7 @@ public class OrderControllerTest {
 		given().
 			contentType(MediaType.APPLICATION_JSON).
 		expect().
+			contentType(MediaType.APPLICATION_JSON).
 			statusCode(400).
 		when().
 			put(ROUTE_ORDERS_ID_STATUS, 1, "DUMMY");

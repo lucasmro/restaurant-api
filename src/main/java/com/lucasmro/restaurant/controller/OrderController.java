@@ -18,6 +18,7 @@ import org.apache.commons.lang3.EnumUtils;
 
 import com.lucasmro.restaurant.enums.OrderStatus;
 import com.lucasmro.restaurant.enums.ProductType;
+import com.lucasmro.restaurant.exception.ApplicationException;
 import com.lucasmro.restaurant.exception.ResourceNotFoundException;
 import com.lucasmro.restaurant.fixture.OrderFixture;
 import com.lucasmro.restaurant.model.Order;
@@ -28,9 +29,9 @@ import com.lucasmro.restaurant.model.Product;
 public class OrderController {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response saveOrder(Order order) {
+	public Response saveOrder(Order order) throws ApplicationException {
 		if (!order.isValid()) {
-			return Response.status(Response.Status.BAD_REQUEST).build();
+			throw new ApplicationException("Order is invalid!");
 		}
 
 		// TODO: Create persistence layer
@@ -95,12 +96,15 @@ public class OrderController {
 
 	@PUT
 	@Path("/{id}/{status}")
-	public Response putOrderStatusByOrderId(@PathParam("id") Integer id, @PathParam("status") String status) {
-		// TODO: Create persistence layer and change the following validation
+	public Response putOrderStatusByOrderId(@PathParam("id") Integer id, @PathParam("status") String status) throws ResourceNotFoundException, ApplicationException {
+		// TODO: Create persistence layer
 
-		if (id == 1000 || !EnumUtils.isValidEnum(OrderStatus.class, status)) {
-			// TODO: Maybe return a JSON error response ?!?
-			return Response.status(Status.BAD_REQUEST).build();
+		if (id == 1000) {
+			throw new ResourceNotFoundException("No Order found with Id " + id);
+		}
+
+		if (!EnumUtils.isValidEnum(OrderStatus.class, status)) {
+			throw new ApplicationException("Status is invalid!");
 		}
 
 		return Response.status(Status.NO_CONTENT).build();
