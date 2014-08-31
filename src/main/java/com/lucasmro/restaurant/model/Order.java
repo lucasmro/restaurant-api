@@ -10,6 +10,7 @@ public class Order {
 	private OrderStatus status;
 	private List<OrderItem> items;
 	private Integer table;
+	private Delivery delivery;
 	private Double total;
 	// TODO: createdAt, updatedAt, table, delivery, notes
 
@@ -55,6 +56,14 @@ public class Order {
 		this.table = table;
 	}
 
+	public Delivery getDelivery() {
+		return delivery;
+	}
+
+	public void setDelivery(Delivery delivery) {
+		this.delivery = delivery;
+	}
+
 	public Double getTotal() {
 		return total;
 	}
@@ -66,6 +75,7 @@ public class Order {
 	@Override
 	public String toString() {
 		return "Order [id=" + id + ", status=" + status + ", items=" + items
-				+ ", table=" + table + ", total=" + total + "]";
+				+ ", table=" + table + ", delivery=" + delivery + ", total="
+				+ total + "]";
 	}
 }

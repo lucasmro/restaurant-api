@@ -76,6 +76,11 @@ public class OrderController {
 
 	// TODO: Extract method to a validator class
 	private boolean isValid(Order order) {
-		return (null != order.getItems() && order.getItems().size() > 0) && (order.getTotal() > 0.0) && (null != order.getTable()); 
+		return (null != order.getItems() && order.getItems().size() > 0) &&
+			   (order.getTotal() > 0.0) &&
+			   !(null != order.getTable() && null != order.getDelivery()) && // Should return false when table number and delivery are both set.
+			   (null != order.getTable() || null != order.getDelivery());
+		// TODO: Validate address
+		// TODO: Validate delivery
 	}
 }
