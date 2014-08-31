@@ -27,7 +27,7 @@ public class OrderController {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response saveOrder(Order order) {
-		if (!isValid(order)) {
+		if (!order.isValid()) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 
@@ -96,15 +96,5 @@ public class OrderController {
 		}
 
 		return Response.status(Response.Status.NO_CONTENT).build();
-	}
-
-	// TODO: Extract method to a validator class
-	private boolean isValid(Order order) {
-		return (null != order.getItems() && order.getItems().size() > 0) &&
-			   (order.getTotal() > 0.0) &&
-			   !(null != order.getTable() && null != order.getDelivery()) && // Should return false when table number and delivery are both set.
-			   (null != order.getTable() || null != order.getDelivery());
-		// TODO: Validate address
-		// TODO: Validate delivery
 	}
 }

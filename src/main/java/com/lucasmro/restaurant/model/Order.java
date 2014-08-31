@@ -3,6 +3,8 @@ package com.lucasmro.restaurant.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.lucasmro.restaurant.enums.OrderStatus;
 
 public class Order {
@@ -77,5 +79,15 @@ public class Order {
 		return "Order [id=" + id + ", status=" + status + ", items=" + items
 				+ ", table=" + table + ", delivery=" + delivery + ", total="
 				+ total + "]";
+	}
+
+	@JsonIgnore
+	public boolean isValid() {
+		// TODO: Apply visitor pattern to validate all rules
+		return (null != this.getItems() && this.getItems().size() > 0) &&
+			   (this.getTotal() > 0.0) &&
+			   !(null != this.getTable() && null != this.getDelivery()) && // Should return false when table number and delivery are both set.
+			   (null != this.getTable() || null != this.getDelivery());
+		// TODO: Validate address and delivery
 	}
 }
