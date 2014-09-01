@@ -1,9 +1,13 @@
 package com.lucasmro.restaurant.model;
 
+import org.jongo.marshall.jackson.oid.Id;
+import org.jongo.marshall.jackson.oid.ObjectId;
+
 import com.lucasmro.restaurant.enums.ProductType;
 
 public class Product {
-	private Integer id;
+	@Id @ObjectId
+	private String id;
 	private String description;
 	private ProductType type;
 	private Double price;
@@ -11,11 +15,11 @@ public class Product {
 	public Product() {
 	}
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
