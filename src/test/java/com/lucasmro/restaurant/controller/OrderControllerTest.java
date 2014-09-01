@@ -10,10 +10,14 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import com.lucasmro.restaurant.dao.MongoDBManager;
 import com.lucasmro.restaurant.enums.OrderStatus;
 import com.lucasmro.restaurant.fixture.OrderFixture;
+import com.lucasmro.restaurant.fixture.OrderFixtureHelper;
 import com.lucasmro.restaurant.model.Order;
 
 public class OrderControllerTest {
@@ -21,6 +25,19 @@ public class OrderControllerTest {
 	private final static String ROUTE_ORDERS_ID = "/orders/{id}";
 	private final static String ROUTE_ORDERS_ID_STATUS = "/orders/{id}/{status}";
 	private final static String ROUTE_ORDERS_TABLE = "/orders/table/{table}";
+
+	MongoDBManager manager;
+
+	@Before
+	public void setUp() {
+		manager = new MongoDBManager();
+		OrderFixtureHelper.load(manager);
+	}
+
+	@After
+	public void tearDown() {
+		OrderFixtureHelper.drop(this.manager);
+	}
 
 	@Test
 	public void testPostOrderShouldReturnUnsupportedMediaTypeWhenPayloadIsEmpty() {
@@ -36,6 +53,7 @@ public class OrderControllerTest {
 	public void testPostOrderShouldReturnBadRequestWhenMandatoryFieldsAreBlankOrInvalid() throws JsonGenerationException, JsonMappingException, IOException {
 		Order order = new Order();
 
+		// TODO: Create JsonConverter class to convert from Object to JSON and from JSON to Object.
 		ObjectWriter ow = new ObjectMapper().writer();
 		String json = ow.writeValueAsString(order);
 
@@ -51,7 +69,7 @@ public class OrderControllerTest {
 
 	@Test
 	public void testPostTableOrderShouldReturnCreatedWhenOrderIsValid() throws JsonGenerationException, JsonMappingException, IOException {
-		// TODO: Create data fixture
+		OrderFixtureHelper.drop(this.manager);
 
 		Order order = OrderFixture.createTableOrderHamburguer();
 
@@ -70,7 +88,7 @@ public class OrderControllerTest {
 
 	@Test
 	public void testPostDeliveryOrderShouldReturnCreatedWhenOrderIsValid() throws JsonGenerationException, JsonMappingException, IOException {
-		// TODO: Create data fixture
+		OrderFixtureHelper.drop(this.manager);
 
 		Order order = OrderFixture.createDeliveryOrder();
 
@@ -95,7 +113,7 @@ public class OrderControllerTest {
 			contentType(MediaType.APPLICATION_JSON).
 			statusCode(200).
 		when().
-			get(ROUTE_ORDERS_ID, 1);
+			get(ROUTE_ORDERS_ID, "5403d7f7c19e51e2ea3c02c3");
 	}
 
 	@Test
@@ -106,7 +124,7 @@ public class OrderControllerTest {
 			contentType(MediaType.APPLICATION_JSON).
 			statusCode(404).
 		when().
-			get(ROUTE_ORDERS_ID, 1000);
+			get(ROUTE_ORDERS_ID, "444444444444444444444444");
 	}
 
 	@Test
@@ -132,14 +150,14 @@ public class OrderControllerTest {
 	}
 
 	@Test
-	public void testPutOrderByIdShouldReturnBadRequestAndDoNotUpdateOrderWhenOrderIdIsInvalid() {
+	public void testPutOrderByIdShouldReturnNotFoundWhenOrderDoesNotExists() {
 		given().
 			contentType(MediaType.APPLICATION_JSON).
 		expect().
 			contentType(MediaType.APPLICATION_JSON).
 			statusCode(404).
 		when().
-			put(ROUTE_ORDERS_ID_STATUS, 1000, OrderStatus.CANCELED);
+			put(ROUTE_ORDERS_ID_STATUS, "444444444444444444444444", OrderStatus.CANCELED);
 	}
 
 	@Test
@@ -150,7 +168,7 @@ public class OrderControllerTest {
 			contentType(MediaType.APPLICATION_JSON).
 			statusCode(400).
 		when().
-			put(ROUTE_ORDERS_ID_STATUS, 1, "DUMMY");
+			put(ROUTE_ORDERS_ID_STATUS, "5403d7f7c19e51e2ea3c02c3", "DUMMY");
 	}
 
 	@Test
@@ -160,6 +178,6 @@ public class OrderControllerTest {
 		expect().
 			statusCode(204).
 		when().
-			put(ROUTE_ORDERS_ID_STATUS, 1, OrderStatus.CANCELED);
+			put(ROUTE_ORDERS_ID_STATUS, "5403d7f7c19e51e2ea3c02c3", OrderStatus.CANCELED);
 	}
 }

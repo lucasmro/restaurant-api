@@ -1,6 +1,5 @@
 package com.lucasmro.restaurant.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -16,14 +15,13 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.EnumUtils;
 
+import com.lucasmro.restaurant.dao.MongoDBManager;
+import com.lucasmro.restaurant.dao.OrderDao;
+import com.lucasmro.restaurant.dao.OrderDaoImpl;
 import com.lucasmro.restaurant.enums.OrderStatus;
 import com.lucasmro.restaurant.exception.ApplicationException;
 import com.lucasmro.restaurant.exception.ResourceNotFoundException;
-import com.lucasmro.restaurant.fixture.OrderFixture;
-import com.lucasmro.restaurant.fixture.ProductFixture;
 import com.lucasmro.restaurant.model.Order;
-import com.lucasmro.restaurant.model.OrderItem;
-import com.lucasmro.restaurant.model.Product;
 
 @Path("/orders")
 public class OrderController {
@@ -34,7 +32,9 @@ public class OrderController {
 			throw new ApplicationException("Order is invalid!");
 		}
 
-		// TODO: Create persistence layer
+		// TODO: Change to Dependency Injection
+		OrderDao orderDao = new OrderDaoImpl(new MongoDBManager());
+		orderDao.persist(order);
 
 		return Response.status(Status.CREATED).build();
 	}
@@ -43,22 +43,10 @@ public class OrderController {
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getOrderById(@PathParam("id") String id) throws ResourceNotFoundException {
-		// TODO: Create persistence layer
-		Order order = null;
+		// TODO: Change to Dependency Injection
+		OrderDao orderDao = new OrderDaoImpl(new MongoDBManager());
 
-		if (id == "1") {
-			Product product = ProductFixture.createXEggHamburguer();
-
-			OrderItem item = new OrderItem();
-			item.setProduct(product);
-			item.setQuantity(2);
-
-			order = new Order();
-			order.setId("1");
-			order.setStatus(OrderStatus.WAITING);
-			order.addItem(item);
-			order.setTotal(item.getProduct().getPrice() * item.getQuantity());
-		}
+		Order order = orderDao.findById(id);
 
 		if (null == order) {
 			throw new ResourceNotFoundException("No Order found with Id " + id);
@@ -71,17 +59,10 @@ public class OrderController {
 	@Path("/table/{table}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllOrdersByTable(@PathParam("table") Integer table) throws ResourceNotFoundException {
-		// TODO: Create persistence layer
-		List<Order> orders = null;
+		// TODO: Change to Dependency Injection
+		OrderDao orderDao = new OrderDaoImpl(new MongoDBManager());
 
-		if (table == 5) {
-			Order order1 = OrderFixture.createTableOrderHamburguer();
-			Order order2 = OrderFixture.createTableOrderDrink();
-
-			orders = new ArrayList<Order>();
-			orders.add(order1);
-			orders.add(order2);
-		}
+		List<Order> orders = orderDao.findAllByTable(table);
 
 		if (null == orders) {
 			throw new ResourceNotFoundException("No Orders found for table " + table);
@@ -92,10 +73,13 @@ public class OrderController {
 
 	@PUT
 	@Path("/{id}/{status}")
-	public Response putOrderStatusByOrderId(@PathParam("id") Integer id, @PathParam("status") String status) throws ResourceNotFoundException, ApplicationException {
-		// TODO: Create persistence layer
+	public Response putOrderStatusByOrderId(@PathParam("id") String id, @PathParam("status") String status) throws ResourceNotFoundException, ApplicationException {
+		// TODO: Change to Dependency Injection
+		OrderDao orderDao = new OrderDaoImpl(new MongoDBManager());
 
-		if (id == 1000) {
+		Order order = orderDao.findById(id);
+
+		if (null == order) {
 			throw new ResourceNotFoundException("No Order found with Id " + id);
 		}
 
