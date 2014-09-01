@@ -1,6 +1,5 @@
 package com.lucasmro.restaurant.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -11,23 +10,25 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.lucasmro.restaurant.dao.MongoDBManager;
+import com.lucasmro.restaurant.dao.ProductDao;
+import com.lucasmro.restaurant.dao.ProductDaoImpl;
 import com.lucasmro.restaurant.exception.ResourceNotFoundException;
-import com.lucasmro.restaurant.fixture.ProductFixture;
 import com.lucasmro.restaurant.model.Product;
 
 @Path("/products")
 public class ProductController {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getProducts() {
-		// TODO: Create persistence layer
+	public Response getProducts() throws ResourceNotFoundException {
+		// TODO: Change to Dependency Injection
+		ProductDao productDao = new ProductDaoImpl(new MongoDBManager());
 
-		Product product1 = ProductFixture.createXEggHamburguer();
-		Product product2 = ProductFixture.createCocaColaDrink();
+		List<Product> products = productDao.findAll();
 
-		List<Product> products = new ArrayList<Product>();
-		products.add(product1);
-		products.add(product2);
+		if (null == products) {
+			throw new ResourceNotFoundException("No Product found");
+		}
 
 		return Response.status(Status.OK).entity(products).build();
 	}
@@ -35,13 +36,11 @@ public class ProductController {
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getProduct(@PathParam("id") Integer id) throws ResourceNotFoundException {
-		// TODO: Create persistence layer
-		Product product = null;
+	public Response getProduct(@PathParam("id") String id) throws ResourceNotFoundException {
+		// TODO: Change to Dependency Injection
+		ProductDao productDao = new ProductDaoImpl(new MongoDBManager());
 
-		if (id == 1) {
-			product = ProductFixture.createXEggHamburguer();
-		}
+		Product product = productDao.findById(id);
 
 		if (null == product) {
 			throw new ResourceNotFoundException("No Product found with Id " + id);
