@@ -10,7 +10,8 @@ public class ProductFixtureHelper {
 	public static void load(MongoDBManager manager) {
 		MongoCollection collection = manager.getCollection(COLLECTION_NAME);
 		collection.insert(ProductFixture.createXEggHamburguer());
-		collection.insert(ProductFixture.createCocaColaDrink());
+		collection.insert(ProductFixture.createCokeDrink());
+		collection.insert(ProductFixture.createIceCreamDessert());
 	}
 
 	public static void drop(MongoDBManager manager) {

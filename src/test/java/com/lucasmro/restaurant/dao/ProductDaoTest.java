@@ -41,10 +41,11 @@ public class ProductDaoTest {
 	@Test
 	public void testFindAll() {
 		productDao.persist(ProductFixture.createXEggHamburguer());
-		productDao.persist(ProductFixture.createCocaColaDrink());
+		productDao.persist(ProductFixture.createCokeDrink());
+		productDao.persist(ProductFixture.createIceCreamDessert());
 
 		List<Product> products = productDao.findAll();
-		assertEquals(2, products.size());
+		assertEquals(3, products.size());
 	}
 
 	@Test

@@ -23,7 +23,7 @@ public class OrderFixture {
 	}
 
 	public static Order createTableOrderDrink() {
-		Product product = ProductFixture.createCocaColaDrink();
+		Product product = ProductFixture.createCokeDrink();
 
 		OrderItem item = new OrderItem();
 		item.setProduct(product);
