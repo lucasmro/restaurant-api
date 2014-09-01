@@ -42,11 +42,11 @@ public class OrderController {
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getOrderById(@PathParam("id") Integer id) throws ResourceNotFoundException {
+	public Response getOrderById(@PathParam("id") String id) throws ResourceNotFoundException {
 		// TODO: Create persistence layer
 		Order order = null;
 
-		if (id == 1) {
+		if (id == "1") {
 			Product product = ProductFixture.createXEggHamburguer();
 
 			OrderItem item = new OrderItem();
@@ -54,7 +54,7 @@ public class OrderController {
 			item.setQuantity(2);
 
 			order = new Order();
-			order.setId(1);
+			order.setId("1");
 			order.setStatus(OrderStatus.WAITING);
 			order.addItem(item);
 			order.setTotal(item.getProduct().getPrice() * item.getQuantity());

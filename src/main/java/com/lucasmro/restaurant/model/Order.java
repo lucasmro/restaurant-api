@@ -4,11 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.jongo.marshall.jackson.oid.Id;
+import org.jongo.marshall.jackson.oid.ObjectId;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.lucasmro.restaurant.enums.OrderStatus;
+import com.lucasmro.restaurant.serialization.Group;
 
+@JsonInclude(Include.NON_NULL)
 public class Order {
-	private Integer id;
+	@Id @ObjectId
+	private String id;
 	private OrderStatus status;
 	private List<OrderItem> items;
 	private Integer table;
@@ -22,11 +30,11 @@ public class Order {
 		this.items = new ArrayList<OrderItem>();
 	}
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -82,6 +90,7 @@ public class Order {
 	}
 
 	@JsonIgnore
+	@JsonView(Group.Private.class)
 	public boolean isValid() {
 		// TODO: Apply visitor pattern to validate all rules
 		return (null != this.getItems() && this.getItems().size() > 0) &&
