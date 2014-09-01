@@ -17,10 +17,10 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.EnumUtils;
 
 import com.lucasmro.restaurant.enums.OrderStatus;
-import com.lucasmro.restaurant.enums.ProductType;
 import com.lucasmro.restaurant.exception.ApplicationException;
 import com.lucasmro.restaurant.exception.ResourceNotFoundException;
 import com.lucasmro.restaurant.fixture.OrderFixture;
+import com.lucasmro.restaurant.fixture.ProductFixture;
 import com.lucasmro.restaurant.model.Order;
 import com.lucasmro.restaurant.model.OrderItem;
 import com.lucasmro.restaurant.model.Product;
@@ -47,11 +47,7 @@ public class OrderController {
 		Order order = null;
 
 		if (id == 1) {
-			Product product = new Product();
-			product.setId(1);
-			product.setType(ProductType.HAMBURGUER);
-			product.setDescription("X-EGG");
-			product.setPrice(10.5);
+			Product product = ProductFixture.createXEggHamburguer();
 
 			OrderItem item = new OrderItem();
 			item.setProduct(product);

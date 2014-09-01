@@ -1,6 +1,5 @@
 package com.lucasmro.restaurant.fixture;
 
-import com.lucasmro.restaurant.enums.ProductType;
 import com.lucasmro.restaurant.model.Address;
 import com.lucasmro.restaurant.model.Delivery;
 import com.lucasmro.restaurant.model.Order;
@@ -9,11 +8,7 @@ import com.lucasmro.restaurant.model.Product;
 
 public class OrderFixture {
 	public static Order createTableOrderHamburguer() {
-		Product product = new Product();
-		product.setId(1);
-		product.setType(ProductType.HAMBURGUER);
-		product.setDescription("X-EGG");
-		product.setPrice(10.5);
+		Product product = ProductFixture.createXEggHamburguer();
 
 		OrderItem item = new OrderItem();
 		item.setProduct(product);
@@ -28,11 +23,7 @@ public class OrderFixture {
 	}
 
 	public static Order createTableOrderDrink() {
-		Product product = new Product();
-		product.setId(1);
-		product.setType(ProductType.DRINK);
-		product.setDescription("Coca-Cola");
-		product.setPrice(4.0);
+		Product product = ProductFixture.createCocaColaDrink();
 
 		OrderItem item = new OrderItem();
 		item.setProduct(product);
@@ -47,11 +38,7 @@ public class OrderFixture {
 	}
 
 	public static Order createDeliveryOrder() {
-		Product product = new Product();
-		product.setId(1);
-		product.setType(ProductType.HAMBURGUER);
-		product.setDescription("X-EGG");
-		product.setPrice(10.5);
+		Product product = ProductFixture.createXEggHamburguer();
 
 		OrderItem item = new OrderItem();
 		item.setProduct(product);

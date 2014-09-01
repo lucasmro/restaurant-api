@@ -11,8 +11,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.lucasmro.restaurant.enums.ProductType;
 import com.lucasmro.restaurant.exception.ResourceNotFoundException;
+import com.lucasmro.restaurant.fixture.ProductFixture;
 import com.lucasmro.restaurant.model.Product;
 
 @Path("/products")
@@ -22,17 +22,8 @@ public class ProductController {
 	public Response getProducts() {
 		// TODO: Create persistence layer
 
-		Product product1 = new Product();
-		product1.setId(1);
-		product1.setType(ProductType.HAMBURGUER);
-		product1.setDescription("X-EGG");
-		product1.setPrice(10.5);
-
-		Product product2 = new Product();
-		product2.setId(2);
-		product2.setType(ProductType.DRINK);
-		product2.setDescription("Coca-Cola");
-		product2.setPrice(4.0);
+		Product product1 = ProductFixture.createXEggHamburguer();
+		Product product2 = ProductFixture.createCocaColaDrink();
 
 		List<Product> products = new ArrayList<Product>();
 		products.add(product1);
@@ -49,11 +40,7 @@ public class ProductController {
 		Product product = null;
 
 		if (id == 1) {
-			product = new Product();
-			product.setId(1);
-			product.setType(ProductType.HAMBURGUER);
-			product.setDescription("X-EGG");
-			product.setPrice(10.5);
+			product = ProductFixture.createXEggHamburguer();
 		}
 
 		if (null == product) {
