@@ -1,89 +1,89 @@
 Restaurant API
 =======
 
-**To read this document in Brazilian Portuguese, access the [README.pt-br.md](README.pt-br.md) file.**
+API REST para gerenciar um restaurante com pedidos locais e online.
 
-REST API to manage a restaurant with local and online orders (delivery).
+## Desafio
 
-## Challenge
+### Casos de uso
 
-### Use Cases
+#### Tipos de pedidos:
 
-#### Types of orders:
+- Pedidos realizados no restaurante (tablet na mesa do cliente).
+- Pedidos realizados online (parceiros) para entrega.
 
-- Orders made at the restaurant.
-- Orders made online for delivery (partners).
+#### Sistema de cozinha
 
-#### Cooking system
+- Cozinheiro deve poder visualizar todos os pedidos realizados (no local e para entrega) por ordem de chegada.
+- Cozinheiro deve poder alterar o status do pedido para indicar que o pedido está sendo preparado.
+- Cozinheiro deve poder alterar o status do pedido para indicar que o pedido já está pronto.
+- Garçom deve poder alterar o status do pedido para indicar que o pedido já foi entregue.
 
-- As a cook I should be able to view all orders placed (on site / delivery) in the order of arrival.
-- As a cook I should be able to change the order status to indicate that the order is being prepared.
-- As a cook I should be able to change the order status to indicate that the order is ready.
-- As a waiter I should be able to change the order status to indicate that the order has been delivered.
+#### Sistema de mesa
 
-#### Table System
+- Cliente deve poder realizar o pedido, escolhendo um hamburguer e uma bebida.
+- Cliente deve poder consultar o status do pedido, para verificar se o mesmo já está sendo preparado.
+- Cliente deve poder consultar o valor total de seus pedidos.
 
-- As a customer I must be able to place an order, choosing a burger and a drink.
-- As a customer I must be able to check the order status, to see if it is already being prepared.
-- As a customer I must be able to check the value of the bill at any moment.
+#### Pedidos online (API)
 
-#### Online orders (API)
+- Um parceiro deve poder enviar um pedido através da API, informando os itens do pedido e o endereço de entrega.
+- um parceiro deve poder consultar o status de um pedido.
 
-- A partner must be able to send an order through the API, stating the order items and the delivery address.
-- A partner should be able to check the order status.
+## Motivação
 
-## Motivation
+Experimentar novas tecnologias, bibliotecas e garantir uma boa cobertura de testes.
 
-Learn new technologies, libraries and ensure good coverage tests.
+- [RESTEasy](http://resteasy.jboss.org/) - Construir um webservice REST, a escolha foi o RESTEasy.
+- [REST-assured](https://code.google.com/p/rest-assured/) - Essa biblioteca foi escolhida pela simplicidade para testar e validar serviços REST.
+- [MongoDB](http://www.mongodb.org/) - Por ser um banco de dados de documento, foi escolhido para melhor representar a estrutura de um pedido (produtos, quantidades e dados da entrega) e também pela excelente performance na leitura.
+- [Jongo](http://www.jongo.org/) - Essa biblioteca foi escolhida por permitir a utilização da query language do MongoDB no Java e também pela performance.
 
-- [RESTEasy] (http://resteasy.jboss.org/) - Build a REST webservice, the choice was RESTEasy.
-- [REST-assured] (https://code.google.com/p/rest-assured/) - This library was chosen due to its simplicity to test and validate REST services.
-- [MongoDB] (http://www.mongodb.org/) - As a document database, it was chosen to best represent the structure of an order (products, quantity and delivery data) and also the excellent reading performance.
-- [Jongo] (http://www.jongo.org/) - This library was chosen to allow the use of MongoDB in Java and also its great performance.
-
-## Future Improvements
+## Melhorias futuras
 
 - **Cache**
 
-- **Authentication**
+	Talvez cache de borda com Varnish?
 
-	Implement OAuth2.
+- **Autenticação**
 
-- **Dependency Injection**
+	Implementar OAuth2.
 
-	Spring.
+- **Injeção de Dependência**
 
-## Requirements
+	Utilizar o Spring.
+
+## Requisitos
 
 - Java 7
 - Jetty 9
 - MongoDB 2.6.4
 
-## Configuration
+## Configuração
 
 ### MongoDB
 
-1 - [Download] (http://www.mongodb.org/downloads) MongoDB 2.6.4 for the version of your operating system.
+1 - Faça o [download](http://www.mongodb.org/downloads) do MongoDB 2.6.4 para a versão do seus sistema operacional.
 
-2 - Follow the installation recommendations and start the server
+2 - Siga as recomendações de instalação e inicie o servidor
 
-`` Html
+```html
 $ mongod
-`` `
+```
 
-## How to use
+## Como utilizar
 
-With the Web server and the MongoDB started and running, perform the following requests to consume the API:
+Com o servidor Web e o MongoDB rodando, execute as requisições a seguir para consumir a API.
 
-### List all products
+### Listar todos os produtos
 
-**Example request:**
+**Exemplo de requisição:**
 
 - **GET** [/products](/products)
 - **Accept:** application/json
 - **Content-Type:** application/json
 
-**Example response:**
+**Exemplo de resposta:**
 
 ```json
 	[
@@ -110,15 +110,15 @@ With the Web server and the MongoDB started and running, perform the following r
 
 - **200** OK
 
-### Get the details of a product by ID
+### Obter os detalhes de um produto pelo ID
 
-**Example request:**
+**Exemplo de requisição:**
 
 - **GET** [/products/{id}](/products/{id})
 - **Accept:** application/json
 - **Content-Type:** application/json
 
-**Example response:**
+**Exemplo de resposta:**
 
 ```json
 	{
@@ -131,9 +131,9 @@ With the Web server and the MongoDB started and running, perform the following r
 
 - **200** OK
 
-### Create an order (local)
+### Criar um pedido local
 
-**Example request:**
+**Exemplo de requisição:**
 
 - **POST** [/orders](/orders)
 - **Accept:** application/json
@@ -160,13 +160,13 @@ With the Web server and the MongoDB started and running, perform the following r
 	}
 ```
 
-**Example response:**
+**Exemplo de resposta:**
 
 - **201** CREATED
 
-### Create an order (online)
+### Criar um pedido online
 
-**Example request:**
+**Exemplo de requisição:**
 
 - **POST** [/orders](/orders)
 - **Accept:** application/json
@@ -205,19 +205,19 @@ With the Web server and the MongoDB started and running, perform the following r
 	}
 ```
 
-**Example response:**
+**Exemplo de resposta:**
 
 - **201** CREATED
 
-### Get the details of an order by ID
+### Obter os detalhes de um pedido pelo ID
 
-**Example request:**
+**Exemplo de requisição:**
 
 - **GET** [/orders/{id}](/orders/{id})
 - **Accept:** application/json
 - **Content-Type:** application/json
 
-**Example response:**
+**Exemplo de resposta:**
 
 ```json
 	{
@@ -242,15 +242,15 @@ With the Web server and the MongoDB started and running, perform the following r
 
 - **200** OK
 
-### List all requests by table number
+### Listar todos os pedidos pelo número da mesa
 
-**Example request:**
+**Exemplo de requisição:**
 
 - **GET** [/orders/table/{table}](/orders/table/{table})
 - **Accept:** application/json
 - **Content-Type:** application/json
 
-**Example response:**
+**Exemplo de resposta:**
 
 ```json
 	[
@@ -295,21 +295,21 @@ With the Web server and the MongoDB started and running, perform the following r
 
 - **200** OK
 
-### Modify the status of an order by ID
+### Modificar o status de um pedido pelo ID
 
-**Example request:**
+**Exemplo de requisição:**
 
 - **PUT** [/orders/{id}/{status}](/orders/{id}/{status})
 - **Accept:** application/json
 - **Content-Type:** application/json
 
-**Example response:**
+**Exemplo de resposta:**
 
 - **204** NO CONTENT
 
-## Error Codes
+## Códigos de erro
 
-| Code | Description | Reason                                    |
-| ---- | ----------- | ----------------------------------------- |
-| 400  | Bad Request | Missing parameters or invalid parameters. |
-| 404  | Not Found   | Value not found in the database.	         |
+| Código | Descrição   | Motivo                                       |
+| ------ | ----------- | -------------------------------------------- |
+| 400    | Bad Request | Parâmetros ausentes ou parâmetros inválidos. |
+| 404    | Not Found   | Recurso não encontrado no banco de dados.    |
